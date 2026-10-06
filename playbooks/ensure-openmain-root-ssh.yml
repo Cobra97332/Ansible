@@ -29,12 +29,23 @@
         group: root
         mode: "0700"
 
+    - name: Ensure root authorized_keys exists
+      ansible.builtin.file:
+        path: /root/.ssh/authorized_keys
+        state: touch
+        owner: root
+        group: root
+        mode: "0600"
+
     - name: Install OpenMain public key for root
-      ansible.posix.authorized_key:
-        user: root
-        key: "{{ openmain_root_ssh_key }}"
+      ansible.builtin.lineinfile:
+        path: /root/.ssh/authorized_keys
+        line: "{{ openmain_root_ssh_key }}"
         state: present
-        manage_dir: false
+        create: true
+        owner: root
+        group: root
+        mode: "0600"
 
     - name: Ensure sshd drop-in directory exists
       ansible.builtin.file:
